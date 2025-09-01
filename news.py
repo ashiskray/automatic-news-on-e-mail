@@ -10,10 +10,10 @@ email = EmailMessage()
 
 def clean_text(text):
     """Remove or replace characters that can't be encoded in latin1"""
-    text = text.replace('“', '"').replace('”', '"')  # Smart quotes
-    text = text.replace('’', "'").replace('‘', "'")  # Smart apostrophes
-    text = text.replace('—', '-').replace('–', '-')  # Em and en dashes
-    text = text.replace('…', '...')  # Ellipsis
+    text = text.replace('“', '"').replace('”', '"')  
+    text = text.replace('’', "'").replace('‘', "'")  
+    text = text.replace('—', '-').replace('–', '-')  
+    text = text.replace('…', '...')  
     text = text.encode('latin1', errors='ignore').decode('latin1')
     return text
 
@@ -24,12 +24,12 @@ def get_news():
         response.raise_for_status()
         
         soup = BeautifulSoup(response.content, "xml")
-        headlines = soup.find_all("title")[2:12]  # Skip metadata
+        headlines = soup.find_all("title")[2:12]  
         
         if not headlines:
             print("No headlines found!")
             return None
-        
+        # pdf file ......
         today = datetime.now().strftime("%d-%m-%y")
         filename = f"headlines_{today}.pdf"
         
@@ -55,7 +55,7 @@ def get_news():
         
         pdf.output(filename)
         print(f"Headlines saved as '{filename}' successfully!")
-        return filename   # return path
+        return filename   
     except Exception as e:
         print(f"Error: {e}")
         return None
@@ -65,7 +65,7 @@ if __name__ == "__main__":
     if pdf_file:
         subject = "Today's Top 10 News Headlines 📰"
         body = "Attached is the PDF containing today's top 10 news headlines."
-        
+        # email info....
         sender_email = "senders.mail@gmail.com"      # senders mail here 
         receiver_email = "receiver.mail@gmail.com"   # receivers mail here 
         app_password = "app_password"                # your app password here 
@@ -75,7 +75,7 @@ if __name__ == "__main__":
         email['subject'] = subject
         email.set_content(body)
         
-        # Attach PDF
+        # Attach PDF file 
         with open(pdf_file, "rb") as f:
             file_data = f.read()
             file_name = f.name
@@ -87,4 +87,5 @@ if __name__ == "__main__":
             smtp.login(sender_email, app_password)
             smtp.send_message(email)
         
+
         print("✅ Email sent with PDF attachment!")
